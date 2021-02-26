@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER Daniel Dolezal <daniel156161@protonmail.com>
 
 ENV TZ=Europe/Vienna
