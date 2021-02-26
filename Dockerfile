@@ -4,7 +4,8 @@ MAINTAINER Daniel Dolezal <daniel156161@protonmail.com>
 ENV TZ=Europe/Vienna
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt-get update && apt-get install -y software-properties-common && apt-add-repository universe && apt-get install -y apache2 php php-mysql apt-utils tzdata nano certbot python-certbot-apache && apt-get clean
+RUN apt-get update && apt-get install -y software-properties-common && apt-add-repository universe
+RUN apt-get install -y apache2 php php-mysql apt-utils tzdata nano certbot && apt-get clean
 
 ENV APACHE_RUN_USER  www-data
 ENV APACHE_RUN_GROUP www-data
