@@ -4,8 +4,8 @@ MAINTAINER Daniel Dolezal <daniel156161@protonmail.com>
 ENV TZ=Europe/Vienna
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt-get update && apt-get install -y software-properties-common && apt-add-repository universe
-RUN apt-get update && apt-get install -y apache2 php php-mysql apt-utils tzdata nano && apt-get clean
+RUN apt-get update && apt-get install -y software-properties-common && apt-add-repository universe && add-apt-repository ppa:ondrej/php
+RUN apt-get update && apt-get install -y apache2 php8.0 libapache2-mod-php8.0 php8.0-mysql apt-utils tzdata nano && apt-get clean
 
 ENV APACHE_RUN_USER  www-data
 ENV APACHE_RUN_GROUP www-data
