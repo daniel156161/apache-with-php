@@ -1,5 +1,4 @@
-FROM ubuntu:20.04
-MAINTAINER Daniel Dolezal <daniel156161@protonmail.com>
+FROM ubuntu:rolling
 
 ENV TZ=Europe/Vienna
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
