@@ -4,7 +4,7 @@ ENV TZ=Europe/Vienna
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get update -y && apt-get install -y software-properties-common && apt-add-repository universe && add-apt-repository ppa:ondrej/php
-RUN apt-get update && apt-get install -y apache2 php libapache2-mod-php php-mysql php-common apt-utils tzdata nano && apt-get clean
+RUN apt-get update && apt-get install -y apache2 php libapache2-mod-php php-mysql php-common php-mbstring apt-utils tzdata nano && apt-get clean
 
 ENV APACHE_RUN_USER=www-data
 ENV APACHE_RUN_GROUP=www-data
