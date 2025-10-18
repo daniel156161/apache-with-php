@@ -1,23 +1,18 @@
-FROM ubuntu:latest
+FROM php:8.4-apache
 
 ENV TZ=Europe/Vienna
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt-get update && apt-get update -y && apt-get install -y software-properties-common && apt-add-repository universe && add-apt-repository ppa:ondrej/php
-RUN apt-get update && apt-get install -y apache2 php libapache2-mod-php php-mysql php-common php-mbstring apt-utils tzdata nano && apt-get clean
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-ENV APACHE_RUN_USER=www-data
-ENV APACHE_RUN_GROUP=www-data
-ENV APACHE_LOG_DIR=/var/log/apache2
-ENV APACHE_PID_FILE=/var/run/apache2/apache2.pid
-ENV APACHE_RUN_DIR=/var/run/apache2
-ENV APACHE_LOCK_DIR=/var/lock/apache2
-ENV APACHE_LOG_DIR=/var/log/apache2
+# Install Composer from the official image
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN mkdir -p $APACHE_RUN_DIR
-RUN mkdir -p $APACHE_LOCK_DIR
-RUN mkdir -p $APACHE_LOG_DIR
+# Set the working directory inside the container
+WORKDIR /var/www/html
+COPY ./src /var/www/html/
+
+RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
-
-CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]
+CMD ["apache2-foreground"]

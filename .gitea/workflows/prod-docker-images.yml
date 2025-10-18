@@ -1,0 +1,55 @@
+name: Build and Push Docker Container
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # --- Extract Version Tag or Commit SHA ---
+      - name: Determine version tag
+        id: version
+        run: |
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "VERSION_TAG=$TAG" >> $GITHUB_ENV
+          echo "Using version tag: $TAG"
+
+      # --- Login to Gitea Registry ---
+      - name: Login to Gitea Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.DOCKER_REGISTRY_URL }}
+          username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          password: ${{ secrets.ACTION_ACCESS_TOKEN }}
+
+      # --- Login to Docker Hub ---
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Convert repository owner to lowercase
+        run: echo "REPO_OWNER_LC=$(echo '${{ gitea.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # --- Build and Push to Both Registries ---
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ${{ vars.GITEA_REGISTRY_URL }}/${{ env.REPO_OWNER_LC }}/apache-php:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/apache-php:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/apache-php:${{ env.VERSION_TAG }}
