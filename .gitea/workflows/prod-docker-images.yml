@@ -50,6 +50,6 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ vars.GITEA_REGISTRY_URL }}/${{ env.REPO_OWNER_LC }}/apache-php:latest
+            ${{ vars.DOCKER_REGISTRY_URL }}/${{ env.REPO_OWNER_LC }}/apache-php:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/apache-php:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/apache-php:${{ env.VERSION_TAG }}
